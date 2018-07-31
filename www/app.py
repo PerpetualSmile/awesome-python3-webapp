@@ -1,9 +1,5 @@
 # !/usr/bin/env python3 
 # -*- coding: utf-8 -*- 
-# @Author: dong 
-# @Date: 2018-06-17 12:44:43 
-# @Env: python 3.6 
-# @Github: https://github.com/PerpetualSmile 
 
 import logging;logging.basicConfig(level=logging.INFO)
 import asyncio, os, json, time

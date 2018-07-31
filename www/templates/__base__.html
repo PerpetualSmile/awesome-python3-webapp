@@ -22,16 +22,16 @@
     <meta charset="UTF-8"> {% block meta %}
     <!-- block meta-->{% endblock %}
     <title>{% block title %} ? {% endblock %} - Awesome Python Webapp</title>
-    <link rel="stylesheet" href="../static/css/uikit.min.css">
-    <link rel="stylesheet" href="../static/css/uikit.gradient.min.css">
-    <link rel="stylesheet" href="../static/css/awesome.css" />
-    <link rel="stylesheet" href="../static/css/components/sticky.min.css" />
-    <script src="../static/js/jquery-3.3.1.min.js"></script>
-    <script src="../static/js/uikit.min.js"></script>
-    <script src="../static/js/components/sticky.min.js"></script>
-    <script src="../static/js/vue.min.js"></script>
-    <script src="../static/js/sha1.min.js"></script>
-    <script src="../static/js/awesome.js"></script> {% block beforehead %}
+    <link rel="stylesheet" href="/static/css/uikit.min.css">
+    <link rel="stylesheet" href="/static/css/uikit.gradient.min.css">
+    <link rel="stylesheet" href="/static/css/awesome.css" />
+    <link rel="stylesheet" href="/static/css/components/sticky.min.css" />
+    <script src="/static/js/jquery-3.3.1.min.js"></script>
+    <script src="/static/js/uikit.min.js"></script>
+    <script src="/static/js/components/sticky.min.js"></script>
+    <script src="/static/js/vue.min.js"></script>
+    <script src="/static/js/sha1.min.js"></script>
+    <script src="/static/js/awesome.js"></script> {% block beforehead %}
     <!-- before head -->{% endblock %}
 </head>
 
@@ -61,9 +61,13 @@
                             <i class="uk-icon-user"></i> {{ __user__.name }}</a>
                         <div class="uk-dropdown uk-dropdown-navbar">
                             <ul class="uk-nav uk-nav-navbar">
+                                {% if __user__.admin %}
                                 <li>
-                                    <a href="/signout">
-                                        <i class="uk-icon-sign-out"></i> 登出</a>
+                                    <a href="/manage/blogs/create"><i class="uk-icon-edit"></i> 编辑日志</a>
+                                </li>
+                                {% endif %}
+                                <li>
+                                    <a href="/signout"><i class="uk-icon-sign-out"></i> 登出</a>
                                 </li>
                             </ul>
                         </div>
