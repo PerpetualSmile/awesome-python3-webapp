@@ -1,0 +1,114 @@
+{% extends "__base__.html" %}
+{% block title %}日志{% endblock title %}
+{% block beforehead %}
+<script>
+    function initVM(data) {
+        var vm = new Vue({
+            el: '#vm',
+            data: {
+                blogs: data.blogs,
+                page: data.page
+            },
+            methods: {
+                edit_blog: function(blog) {
+                    location.assign('/manage/blogs/edit?id=' + blog.id);
+                },
+                delete_blog: function(blog) {
+                    if(confirm('确认要删除“' + blog.name + '”？删除后不可恢复！')) {
+                        postJSON('/api/blogs/' + blog.id + '/delete', function(err, r) {
+                            if(err) {
+                                return alert(err.message || err.error || err);
+                            }
+                            refresh();
+                        });
+                    }
+                }
+            }
+        });
+        $('#vm').show();
+    }
+
+    Vue.config.devtools = true;
+    
+
+    $(function() {
+        getJSON('/api/blogs', {
+            page: {{ page_index }}
+        }, function (err, results) {
+            if (err) {
+                return fatal(err);
+            }
+            $('#loading').hide();
+            initVM(results);
+        });
+    });
+
+    
+</script>
+
+{% endblock beforehead %}
+
+{% block content %}
+<div class="uk-width-1-1 uk-margin-bottom">
+    <div class="uk-panel uk-panel-box">
+        <ul class="uk-breadcrumb">
+            <li><a href="/manage/comments">评论</a></li>
+            <li class="uk-active"><span>日志</span></li>
+            <li><a href="/manage/users">用户</a></li>
+        </ul>
+    </div>
+</div>
+
+<div id="error" class="uk-width-1-1">
+</div>
+
+<div id="loading" class="uk-width-1-1 uk-text-center">
+    <span><i class="uk-icon-spinner uk-icon-medium uk-icon-spin"></i> 正在加载...</span>
+</div>
+
+<div id="vm" class="uk-width-1-1">
+    <a href="/manage/blogs/create" class="uk-button uk-button-primary"><i class="uk-icon-plus"></i> 新日志</a>
+
+    <table class="uk-table uk-table-hover">
+        <thead>
+            <tr>
+                <th class="uk-width-5-10">标题 / 摘要</th>
+                <th class="uk-width-2-10">作者</th>
+                <th class="uk-width-2-10">创建时间</th>
+                <th class="uk-width-1-10">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="blog in blogs" >
+                <td>
+                    <a target="_blank" v-bind:href="'/blog/'+blog.id" v-text="blog.name"></a>
+                </td>
+                <td>
+                    <a target="_blank" v-bind:href="'/user/'+blog.user_id" v-text="blog.user_name"></a>
+                </td>
+                <td>
+                    <span v-text="blog.created_at.toDateTime()"></span>
+                </td>
+                <td>
+                    <a href="#0" v-on:click.stop = "edit_blog(blog)"><i class="uk-icon-edit">&nbsp</i>
+                    <a href="#0" v-on:click.stop = "delete_blog(blog)"><i class="uk-icon-trash-o"></i>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </a>
+    <ul class="uk-pagination">
+            <li v-if="page.has_previous"><a v-bind:href="'/manage/blogs?page=' + (page.page_index - 1)"><i class="uk-icon-angle-double-left"></i></a></li>
+            <li v-else class="uk-disabled"><span><i class="uk-icon-angle-double-left"></i></span></li>
+
+            <li class="uk-disabled" v-for="n in page.page_index-1"><a v-bind:href="'/manage/blogs?page=' + n"><span v-text="n"></span></a></li>
+            <li class="uk-active"><span v-text="page.page_index"></span></li>
+            <li class="uk-disabled" v-for="n in page.page_count" v-if="n > page.page_index"><a v-bind:href="'/manage/blogs?page=' + n"><span v-text="n"></span></a></li>
+
+            <li v-if="page.has_next"><a v-bind:href="'/manage/blogs?page=' + (page.page_index + 1)"><i class="uk-icon-angle-double-right"></i></a></li>
+            <li v-else class="uk-disabled"><span><i class="uk-icon-angle-double-right"></i></span></li>
+        
+    </ul>
+</div>
+
+{% endblock content %}
